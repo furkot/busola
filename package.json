@@ -1,6 +1,6 @@
 {
   "name": "busola",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Track along polyline by generating events in response to position changes.",
   "main": "index.js",
   "scripts": {

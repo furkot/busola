@@ -2,9 +2,8 @@
   "name": "busola",
   "repo": "furkot/busola",
   "description": "Track along polyline by generating events in response to position changes.",
-  "version": "0.0.0",
-  "keywords": [
-  ],
+  "version": "0.1.0",
+  "keywords": [],
   "dependencies": {
     "code42day/distance": "*",
     "component/emitter": "*",
