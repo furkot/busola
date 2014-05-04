@@ -1,0 +1,36 @@
+{
+  "name": "busola",
+  "version": "0.0.0",
+  "description": "Track along polyline by generating events in response to position changes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "make check",
+    "postinstall": "add-component-symlinks"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/furkot/busola.git"
+  },
+  "keywords": [
+    "geo",
+    "position",
+    "track"
+  ],
+  "author": "Damian Krzeminski <pirxpilot@code42day.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/furkot/busola/issues"
+  },
+  "homepage": "https://github.com/furkot/busola",
+  "devDependencies": {
+    "should": "~3",
+    "mocha": "~1",
+    "jshint": "~2",
+    "component": "~0"
+  },
+  "dependencies": {
+    "component-emitter": "~1",
+    "spherical": "~0",
+    "code42day-distance": "~0"
+  }
+}
