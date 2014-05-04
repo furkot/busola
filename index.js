@@ -1,6 +1,6 @@
 var Emitter = require('emitter');
 var metric = require('spherical').distance;
-var distance = require('./distance');
+var distance = require('distance');
 
 module.exports = directions;
 
@@ -43,19 +43,30 @@ function find(pos, legs) {
 
 // decide if we are still on tracked leg or if we should move on to the next one
 function detect(pos, legs, index) {
-  var closest = find(pos, legs.slice(index, index + 1));
-  if (typeof closest === 'number') {
-    return closest + index;
+  var ll = pos2ll(pos),
+    current = legs[index],
+    candidate = legs[index + 1],
+    closest;
+
+  if (candidate) {
+    closest = distance.closest(ll, candidate.from, candidate.to);
+    if (metric(ll, closest) < margin.point) {
+      return index + 1; // next one is close enough
+    }
+  }
+  closest = distance.closest(ll, current.from, current.to);
+  if (metric(ll, closest) < margin.line) {
+    return index; // still following current
   }
 }
 
 
 // emits the following events
 // turn, follow, lost
-function directions() {
+function directions(legs) {
   var self,
     my = {
-      legs: []
+      legs: legs
     };
 
   function distanceToNextTurn(pos, leg) {
@@ -67,14 +78,17 @@ function directions() {
     self.emit('follow', leg, distanceToNextTurn(pos, leg));
   }
 
-  function emitTurn(index) {
-    self.emit('turn', my.legs[index], my.legs[index + 1]);
+  function emitTurn(pos, index) {
+    var next = my.legs[index + 1];
+    self.emit('turn', my.legs[index], next, distanceToNextTurn(pos, next));
   }
 
   function start(pos) {
     var current = find(pos, my.legs);
     if (typeof current === 'number') {
       emitFollow(pos, current);
+    } else {
+      self.emit('lost');
     }
     return current;
   }
@@ -82,9 +96,9 @@ function directions() {
   function track(pos) {
     var current = detect(pos, my.legs, my.current);
     if (current === my.current) {
-      emitFollow(pos, current);
+      emitFollow(pos, my.current);
     } else if (typeof current === 'number') {
-      emitTurn(current);
+      emitTurn(pos, my.current);
     } else {
       self.emit('lost');
     }
@@ -101,6 +115,7 @@ function directions() {
     } else {
       my.current = track(position);
     }
+    return self;
   }
 
   self = {
